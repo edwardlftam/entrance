@@ -10,7 +10,8 @@ orbs:
 
 default: &default
   docker:
-  - image: circleci/ruby:2.6.3-stretch-node
+    - image: circleci/ruby:2.6.3-stretch-node
+  working_directory: /tmp/build
   
 
 jobs:
@@ -23,16 +24,15 @@ jobs:
           command: bundle -v
       - ruby/bundle-install
       - persist_to_workspace:
-          root: /tmp/workspace
-          paths: .
-
-
+          root: /tmp/build
+          paths:
+            - .
 
   test:
     <<: *default
     steps:
       - attach_workspace:
-          at: /tmp/workspace
+          at: /tmp/build
       - run:
           name: Setup Code Climate test-reporter
           command: |
