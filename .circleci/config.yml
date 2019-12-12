@@ -33,7 +33,7 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/build
-      -ruby/bundle-install
+      - ruby/bundle-install
       - run:
           name: Setup Code Climate test-reporter
           command: |
