@@ -1,0 +1,57 @@
+# Ruby CircleCI 2.1 configuration file
+#
+# Check https://circleci.com/docs/2.0/ruby/ for more details
+#
+version: 2.1 
+
+
+orbs:
+  ruby: circleci/ruby@0.1.2 # Ruby orb registry: https://circleci.com/orbs/registry/orb/circleci/ruby
+
+default: &default
+  docker:
+  - image: circleci/ruby:2.6.3-stretch-node
+  
+
+jobs:
+  build: 
+    <<: *default
+    steps: 
+      - checkout
+      - run: 
+          name: Bundle Version
+          command: bundle -v
+      - ruby/bundle-install
+      - persist_to_workspace
+        root: /tmp/workspace
+        paths: .
+
+
+
+  test:
+    <<: *default
+    steps:
+      - attach_workspace:
+        at: /tmp/workspace
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+          # download test reporter as a static binary
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run:
+          name: Run RSpec
+          command: |
+            ./cc-test-reporter before-build
+            bundle exec rspec
+            ./cc-test-reporter after-build -t simplecov --exit-code $?
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
+      - rspec
+        requires:
+          - build
+          
