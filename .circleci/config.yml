@@ -22,9 +22,9 @@ jobs:
           name: Bundle Version
           command: bundle -v
       - ruby/bundle-install
-      - persist_to_workspace
-        root: /tmp/workspace
-        paths: .
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths: .
 
 
 
@@ -51,7 +51,6 @@ workflows:
   build:
     jobs:
       - build
-      - rspec
-        requires:
-          - build
-          
+      - rspec:
+          requires:
+            - build
