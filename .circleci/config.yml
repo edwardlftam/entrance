@@ -11,6 +11,9 @@ orbs:
 default: &default
   docker:
     - image: circleci/ruby:2.6.3-stretch-node
+      environment:
+        CC_TEST_REPORTER_ID: 2cd18aa0fd4cd8386593ed7a7b79244e14baff69ede8bccf61e9af411bd8e1ec
+
   working_directory: /tmp/build
   
 
